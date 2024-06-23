@@ -21,6 +21,8 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
   final titleTextEditingController = TextEditingController();
   final priceEditingController = TextEditingController();
   final descriptionEditingController = TextEditingController();
+  final brandTextEditingController = TextEditingController();
+  String dropdownValue = 'Type1'; // Default value for dropdown
 
   @override
   Widget build(BuildContext context) {
@@ -79,26 +81,51 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
           padding: const EdgeInsets.all(25.0),
           child: SingleChildScrollView(
             child: Column(children: [
-              CustomInputFieldFb1(
-                inputController: titleTextEditingController,
-                labelText: 'Tên sản phẩm',
-                hintText: 'Nhập tên sản phẩm',
-                isNumber: false,
+              TextField(
+                controller: titleTextEditingController,
+                decoration: const InputDecoration(
+                  labelText: 'Tên sản phẩm',
+                  hintText: 'Nhập tên sản phẩm',
+                ),
               ),
-              const SizedBox(height: 15),
-              CustomInputFieldFb1(
-                inputController: descriptionEditingController,
-                labelText: 'Mô tả sản phẩm',
-                hintText: 'Nhập mô tả sản phẩm',
-                isNumber: false,
+              TextField(
+                controller: descriptionEditingController,
+                decoration: const InputDecoration(
+                  labelText: 'Mô tả sản phẩm',
+                  hintText: 'Nhập mô tả sản phẩm',
+                ),
               ),
-              const SizedBox(height: 15),
-              CustomInputFieldFb1(
-                inputController: priceEditingController,
-                labelText: 'Giá sản phẩm',
-                hintText: 'Nhập giá sản phẩm',
-                isNumber: true,
+              TextField(
+                controller: priceEditingController,
+                decoration: const InputDecoration(
+                  labelText: 'Giá sản phẩm',
+                  hintText: 'Nhập giá sản phẩm',
+                ),
+                keyboardType: TextInputType.number,
               ),
+              TextField(
+                controller: brandTextEditingController,
+                decoration: const InputDecoration(
+                  labelText: 'Thương hiệu',
+                  hintText: 'Nhập thương hiệu',
+                ),
+              ),
+              DropdownButton<String>(
+                value: dropdownValue,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    dropdownValue = newValue!;
+                  });
+                },
+                items: <String>['Type1', 'Type2', 'Type3', 'Type4']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+
               // const Spacer(),
               Consumer(
                 builder: (context, watch, child) {
