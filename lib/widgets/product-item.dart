@@ -18,6 +18,8 @@ class ProductItem extends StatelessWidget {
     }
 
     return Card(
+        borderOnForeground: true,
+        shadowColor: Colors.orange,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15)), // shape
         elevation: 5, // shadow

@@ -47,6 +47,7 @@ dependencies:
   remove_diacritic: ^0.9.0
   photo_manager: ^3.2.0
   image_cropper: ^7.0.5
+  flutter_clean_architecture: ^6.0.1
 
 
 

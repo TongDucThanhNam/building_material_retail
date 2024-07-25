@@ -248,57 +248,5 @@ class AdminHome extends ConsumerWidget {
         ),
       ),
     );
-
-    //---------------------------------------------
-    // return Scaffold(
-    //     floatingActionButton: FloatingActionButton(
-    //       child: const Icon(Icons.add, color: Colors.white),
-    //       onPressed: () => Navigator.of(context).push(
-    //           MaterialPageRoute(builder: (_) => const AdminAddProductPage())),
-    //     ),
-    //     appBar: AppBar(
-    //       title: const Text('Tra cứu giá VLXD'),
-    //       actions: [
-    //         IconButton(
-    //             onPressed: () => ref.read(firebaseAuthProvider).signOut(),
-    //             icon: const Icon(Icons.logout))
-    //       ],
-    //     ),
-    //     body: SingleChildScrollView(
-    //       child: Column(
-    //         children: [
-    //           //Search bar
-    //           SearchInputFb1(
-    //               searchController: ref.read(searchControllerProvider),
-    //               hintText: "Tìm kiếm sản phẩm"),
-    //
-    //           //List of products
-    //           Container(
-    //             height: 500,
-    //             child: StreamBuilder<List<Product>>(
-    //                 stream: ref.read(databaseProvider)!.getProducts(),
-    //                 builder: (context, snapshot) {
-    //                   print("State:${snapshot.connectionState}");
-    //                   print("Data:${snapshot.data}");
-    //                   if (snapshot.connectionState == ConnectionState.active &&
-    //                       snapshot.data != null) {
-    //                     print("Data: ${snapshot.data}");
-    //
-    //                     return ListView.builder(
-    //                         itemCount: snapshot.data!.length,
-    //                         itemBuilder: (context, index) {
-    //                           final product = snapshot.data![index];
-    //                           return ProductItem(product: product, ref: ref);
-    //                         });
-    //                   }
-    //                   print("Loading");
-    //                   return const Center(
-    //                     child: Text("Loading..."),
-    //                   );
-    //                 }),
-    //           ),
-    //         ],
-    //       ),
-    //     ));
   }
 }

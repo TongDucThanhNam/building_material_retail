@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:remove_diacritic/remove_diacritic.dart';
 
 import '../../models/product.dart';
+import '../../utils/type.dart';
 import '../providers.dart';
 
 class AdminAddProductPage extends ConsumerStatefulWidget {
@@ -22,7 +23,7 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
   final priceEditingController = TextEditingController();
   final descriptionEditingController = TextEditingController();
   final brandTextEditingController = TextEditingController();
-  String dropdownValue = 'Type1'; // Default value for dropdown
+  String dropdownValue = types[0];
 
   @override
   Widget build(BuildContext context) {
@@ -74,173 +75,372 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
     }
 
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FloatingActionButton.extended(
+          onPressed: addProduct,
+          backgroundColor: Colors.blue,
+          label: const Text('Thêm sản phẩm'),
+          icon: const Icon(Icons.add),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: AppBar(
         title: const Text('Thêm sản phẩm'),
       ),
       body: Padding(
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.all(15.0),
           child: SingleChildScrollView(
-            child: Column(children: [
-              TextField(
-                controller: titleTextEditingController,
-                decoration: const InputDecoration(
-                  labelText: 'Tên sản phẩm',
-                  hintText: 'Nhập tên sản phẩm',
-                ),
-              ),
-              TextField(
-                controller: descriptionEditingController,
-                decoration: const InputDecoration(
-                  labelText: 'Mô tả sản phẩm',
-                  hintText: 'Nhập mô tả sản phẩm',
-                ),
-              ),
-              TextField(
-                controller: priceEditingController,
-                decoration: const InputDecoration(
-                  labelText: 'Giá sản phẩm',
-                  hintText: 'Nhập giá sản phẩm',
-                ),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                controller: brandTextEditingController,
-                decoration: const InputDecoration(
-                  labelText: 'Thương hiệu',
-                  hintText: 'Nhập thương hiệu',
-                ),
-              ),
-              DropdownButton<String>(
-                value: dropdownValue,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    dropdownValue = newValue!;
-                  });
-                },
-                items: <String>['Type1', 'Type2', 'Type3', 'Type4']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Image Holder
+                      Consumer(
+                        builder: (context, watch, child) {
+                          final image = ref.watch(addImageProvider);
+                          return Container(
+                            height: 150,
+                            width: 150,
+                            decoration: BoxDecoration(
+                              color:
+                                  Colors.grey[300], // Màu nền của Image Holder
+                              borderRadius: BorderRadius.circular(
+                                  8), // Bo góc Image Holder
+                            ),
+                            child: image == null
+                                ? Icon(Icons.image,
+                                    size: 80,
+                                    color: Colors
+                                        .grey[500]) // Icon khi chưa có ảnh
+                                : Image.file(
+                                    File(image.path),
+                                    height: 150,
+                                    width: 150,
+                                    fit: BoxFit.cover, // Căn chỉnh ảnh
+                                  ),
+                          );
+                        },
+                      ),
 
-              // const Spacer(),
-              Consumer(
-                builder: (context, watch, child) {
-                  final image = ref.watch(addImageProvider);
-                  return image == null
-                      ? const Text('Chưa có hình ảnh nào được chọn')
-                      : Image.file(
-                          File(image.path),
-                          height: 200,
-                          width: 200,
-                        );
-                },
-              ),
+                      // Button overlay lên Image Holder (vẫn là Image Holder)
+                      GestureDetector(
+                        onTap: () async {
+                          var pickedFile = await ImagePicker().pickImage(
+                            source: ImageSource.gallery,
+                          );
+                          if (pickedFile != null) {
+                            final croppedFile = await ImageCropper().cropImage(
+                              sourcePath: pickedFile.path,
+                              aspectRatio:
+                                  const CropAspectRatio(ratioX: 1, ratioY: 1),
+                              compressFormat: ImageCompressFormat.jpg,
+                              compressQuality: 50,
+                            );
 
-              ElevatedButton(
-                child: const Text('Tải hình ảnh lên'),
-                onPressed: () async {
-                  var pickedFile = await ImagePicker().pickImage(
-                    source: ImageSource.gallery,
-                  );
+                            if (croppedFile != null) {
+                              // Sử dụng file đã cắt (croppedFile) ở đây
+                              ref.watch(addImageProvider.notifier).state =
+                                  croppedFile;
+                            }
+                          }
+                        },
+                        child: Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.white
+                                .withOpacity(0.4), // Nền button trong suốt
+                            shape: BoxShape.circle, // Hình tròn
+                          ),
+                          child: const Icon(Icons.camera_alt, size: 30),
+                        ),
+                      ),
+                    ],
+                  ),
 
-                  if (pickedFile != null) {
-                    final croppedFile = await ImageCropper().cropImage(
-                      sourcePath: pickedFile.path,
-                      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-                      compressFormat: ImageCompressFormat.jpg,
-                      compressQuality: 50,
+                  SizedBox(height: 25),
 
-                      // uiSettings: AndroidUiSettings(
-                      //     toolbarTitle: 'Cắt ảnh',
-                      //     toolbarColor: Colors.blue,
-                      //     toolbarWidgetColor: Colors.white,
-                      //     initAspectRatio: CropAspectRatioPreset.original,
-                      //     lockAspectRatio: false),
-                    );
+                  Card(
+                    child: Column(
+                      children: [
+                        ListTile(
+                          title: TextField(
+                            controller: titleTextEditingController,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                alignLabelWithHint: false,
+                                // labelText: 'Tên sản phẩm',
+                                hintText: 'VD: Ván ép phủ phim 18 ly',
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: () {
+                                    titleTextEditingController.clear();
+                                  },
+                                ),
+                                label: RichText(
+                                  text: const TextSpan(
+                                    text: 'Tên sản phẩm ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
 
-                    if (croppedFile != null) {
-                      // Sử dụng file đã cắt (croppedFile) ở đây
-                      ref.watch(addImageProvider.notifier).state = croppedFile;
-                    }
-                  }
+                                      color: Colors.black, // Màu chữ của label
+                                      fontSize:
+                                          16.0, // Kích thước chữ của label
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: '*',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 18.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )),
+                          ),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          title: TextField(
+                            controller: descriptionEditingController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'VD: Ván ép phủ phim 18 ly chống ẩm',
+                              label: RichText(
+                                text: const TextSpan(
+                                  text: 'Mô tả sản phẩm ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
 
-                  // if (pickedFile != null) {
-                  //   ref.watch(addImageProvider.state).state = pickedFile;
-                  // }
-                },
-              ),
+                                    color: Colors.black, // Màu chữ của label
+                                    fontSize: 16.0, // Kích thước chữ của label
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          title: TextField(
+                            controller: priceEditingController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Nhập giá sản phẩm',
+                              label: RichText(
+                                text: const TextSpan(
+                                  text: 'Giá sản phẩm ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black, // Màu chữ của label
+                                    fontSize: 16.0, // Kích thước chữ của label
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
 
-              ElevatedButton(
-                  onPressed: addProduct, child: const Text("Thêm sản phẩm")),
-            ]),
+                        const Divider(),
+                        //Unit
+                        ListTile(
+                          title: Row(
+                            children: [
+                              // Label ở bên trái
+                              const Expanded(
+                                flex: 3,
+                                child: Text('Đơn vị tính:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              const SizedBox(width: 8),
+                              // Khoảng cách giữa Label và DropdownButton
+                              // DropdownButtonFormField ở bên phải
+                              Expanded(
+                                flex: 2,
+                                child: DropdownButtonFormField(
+                                  value: 'Cái',
+                                  decoration: const InputDecoration(
+                                    border: InputBorder
+                                        .none, // Ẩn đường divider mặc định
+                                    contentPadding: EdgeInsets
+                                        .zero, // Loại bỏ padding mặc định
+                                  ),
+                                  items: const [
+                                    DropdownMenuItem(
+                                      value: 'Cái',
+                                      child: Text('Cái'),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'Mét',
+                                      child: Text('Mét'),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'Bao',
+                                      child: Text('Mét vuông'),
+                                    ),
+                                  ],
+                                  onChanged: (dynamic value) {
+                                    // setState(() {
+                                    //   unit = value;
+                                    // });
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+
+                        const Divider(),
+                        ListTile(
+                          title: TextField(
+                            controller: brandTextEditingController,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              labelText: 'Thương hiệu',
+                              labelStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black, // Màu chữ của label
+                                fontSize: 16.0, // Kích thước chữ của label
+                              ),
+                              hintText: 'VD: Hoa Sen',
+                            ),
+                          ),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          title: Row(
+                            children: [
+                              // Label ở bên trái
+                              const Expanded(
+                                flex: 3,
+                                child: Text('Loại vật liệu:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              const SizedBox(width: 8),
+                              // Khoảng cách giữa Label và DropdownButton
+                              // DropdownButtonFormField ở bên phải
+                              Expanded(
+                                child: DropdownButtonFormField(
+                                  value: dropdownValue,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder
+                                        .none, // Ẩn đường divider mặc định
+                                    contentPadding: EdgeInsets
+                                        .zero, // Loại bỏ padding mặc định
+                                  ),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      dropdownValue = newValue!;
+                                    });
+                                  },
+                                  items: types.map((String value) {
+                                    return DropdownMenuItem(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 25),
+
+                  //Specifications
+                  const Card(
+                      child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          'Thông số kỹ thuật',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Divider(),
+
+                      //Width
+                      ListTile(
+                        title: TextField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            labelText: 'Chiều rộng',
+                            hintText: 'VD: 1220 mm',
+                          ),
+                        ),
+                      ),
+                      Divider(),
+
+                      //Length
+                      ListTile(
+                        title: TextField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            labelText: 'Chiều dài',
+                            hintText: 'VD: 2440 mm',
+                          ),
+                        ),
+                      ),
+                      Divider(),
+
+                      //Thickness
+                      ListTile(
+                        title: TextField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            labelText: 'Độ dày',
+                            hintText: 'VD: 18 mm',
+                          ),
+                        ),
+                      ),
+                      Divider(),
+
+                      //Weight
+                      ListTile(
+                        title: TextField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            labelText: 'Trọng lượng',
+                            hintText: 'VD: 30 kg',
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
+
+                  //End, but add some Space for the FAB
+                  const SizedBox(height: 100),
+                ]),
           )),
-    );
-  }
-}
-
-class CustomInputFieldFb1 extends StatelessWidget {
-  final TextEditingController inputController;
-  final String hintText;
-  final Color primaryColor;
-  final String labelText;
-  final bool isNumber;
-
-  const CustomInputFieldFb1(
-      {Key? key,
-      required this.inputController,
-      required this.hintText,
-      required this.labelText,
-      this.primaryColor = Colors.indigo,
-      required this.isNumber})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
-            offset: const Offset(12, 26),
-            blurRadius: 50,
-            spreadRadius: 0,
-            color: Colors.grey.withOpacity(.1)),
-      ]),
-      child: TextField(
-        controller: inputController,
-        onChanged: (value) {
-          //Do something
-        },
-        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-        style: const TextStyle(fontSize: 16, color: Colors.black),
-        decoration: InputDecoration(
-          labelText: labelText,
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          filled: true,
-          hintText: hintText,
-          hintStyle: TextStyle(color: Colors.grey.withOpacity(.75)),
-          fillColor: Colors.transparent,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
-          border: UnderlineInputBorder(
-            borderSide:
-                BorderSide(color: primaryColor.withOpacity(.1), width: 2.0),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: primaryColor, width: 2.0),
-          ),
-          errorBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.red, width: 2.0),
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide:
-                BorderSide(color: primaryColor.withOpacity(.1), width: 2.0),
-          ),
-        ),
-      ),
     );
   }
 }
