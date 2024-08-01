@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/product.dart';
-import '../../widgets/product-item.dart';
+import '../../widgets/product_item.dart';
 import '../providers.dart';
 
 class AdminHome extends ConsumerWidget {
@@ -216,10 +216,10 @@ class AdminHome extends ConsumerWidget {
             ),
 
             //List of products
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Container(
+            SizedBox(
               height: 500,
               child: StreamBuilder<List<Product>>(
                   stream: ref.read(databaseProvider)!.searchProduct(

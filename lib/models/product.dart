@@ -1,33 +1,27 @@
+import 'package:building_material_retail/models/varitant.dart';
+
 class Product {
-  // final String id;
-  final String name;
-  final String nameWithoutAccent;
-  final String type;
-  final String description;
+  final String name; // Sắt vuông 40x80
+  final String nameWithoutAccent; // sat vuong 40x80
+  final String type; // Sắt
+  final String description; // Sắt xây dựng
+  final List<String>? searchIndex; // [sat, vuong, 40x80]
+  final int price; // 100000
+  final String imageUrl; // https://example.com/image.jpg
+  final String? brand; // Việt Thành
 
-  //searchIndex
-  final List<String>? searchIndex;
-
-  // Remove the unit field
-  final int price;
-  final String imageUrl;
-  final String? brand;
-  final Map<String, dynamic>? specifications;
-  final List<String>? tags;
+  final List<Variant> variants; // List of Variant objects
 
   Product({
-    // required this.id,
     required this.name,
     required this.nameWithoutAccent,
     required this.type,
     required this.description,
-    // Remove the unit field from the constructor
     required this.price,
     required this.imageUrl,
     required this.searchIndex,
+    required this.variants,
     this.brand,
-    this.specifications,
-    this.tags,
   });
 
   Product.fromMap(Map<String, dynamic> map)
@@ -43,10 +37,10 @@ class Product {
         // Remove the unit field from the fromMap constructor
         price = map['price'] ?? 0.0,
         imageUrl = map['imageUrl'] ?? "",
-        brand = map['brand'],
-        specifications = map['specifications'],
-        tags =
-            map['tags'] is List<String> ? List<String>.from(map['tags']) : null;
+        variants = map['variants'] is List<Variant>
+            ? List<Variant>.from(map['variants'])
+            : [],
+        brand = map['brand'];
 
   Map<String, dynamic> toMap() {
     return {
@@ -60,8 +54,7 @@ class Product {
       'price': price,
       'imageUrl': imageUrl,
       'brand': brand,
-      'specifications': specifications,
-      'tags': tags,
+      'variants': variants,
     };
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:building_material_retail/widgets/variant_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -23,7 +24,13 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
   final priceEditingController = TextEditingController();
   final descriptionEditingController = TextEditingController();
   final brandTextEditingController = TextEditingController();
+  List<Map<String, TextEditingController>> variantFields = [];
   String dropdownValue = types[0];
+  bool isVariantLength = false;
+  bool isVariantWidth = false;
+  bool isVariantThickness = false;
+  bool isVariantWeight = false;
+  bool isVariantColor = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +39,25 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
       final fileStorage = ref.read(storageProvider); // reference file storage
       final imageFile =
           ref.read(addImageProvider.notifier).state; // referece the image File
+
+      List<Map<String, String>> variantsData = [];
+
+      for (var variantField in variantFields) {
+        variantsData.add({
+          'lengthController': variantField['lengthController']!.text,
+          'widthController': variantField['widthController']!.text,
+          'thicknessController': variantField['thicknessController']!.text,
+          'weightController': variantField['weightController']!.text,
+          'colorController': variantField['colorController']!.text,
+          'priceController': variantField['priceController']!.text,
+        });
+      }
+
+      // In dữ liệu ra console để kiểm tra
+      print("@@@ Variants Data @@@: ");
+      print(variantsData);
+
+      // ... Tiếp tục xử lý dữ liệu (ví dụ: lưu vào database)
 
       if (storage == null || fileStorage == null || imageFile == null) {
         // make sure none of them are null
@@ -65,8 +91,7 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
           searchIndex: searchIndex,
           type: '',
           brand: '',
-          specifications: {},
-          tags: [],
+          variants: variantsData,
         ));
       });
 
@@ -74,11 +99,24 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
       Navigator.pop(context);
     }
 
+    void _addVariantField() {
+      setState(() {
+        variantFields.add({
+          'lengthController': TextEditingController(),
+          'widthController': TextEditingController(),
+          'thicknessController': TextEditingController(),
+          'weightController': TextEditingController(),
+          'colorController': TextEditingController(),
+          'priceController': TextEditingController(),
+        });
+      });
+    }
+
     return Scaffold(
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FloatingActionButton.extended(
-          onPressed: addProduct,
+          onPressed: addProduct(),
           backgroundColor: Colors.blue,
           label: const Text('Thêm sản phẩm'),
           icon: const Icon(Icons.add),
@@ -162,7 +200,7 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                     ],
                   ),
 
-                  SizedBox(height: 25),
+                  const SizedBox(height: 25),
 
                   Card(
                     child: Column(
@@ -374,68 +412,173 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                     ),
                   ),
 
-                  SizedBox(height: 25),
+                  const SizedBox(height: 25),
 
-                  //Specifications
-                  const Card(
-                      child: Column(
-                    children: [
-                      ListTile(
-                        title: Text(
-                          'Thông số kỹ thuật',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                  //Checkbox Variant available
+                  Card(
+                    child: Column(
+                      children: [
+                        //Length
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  'Dài',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            Checkbox(
+                              value: isVariantLength,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isVariantLength = value!;
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                      ),
-                      Divider(),
 
-                      //Width
-                      ListTile(
-                        title: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            labelText: 'Chiều rộng',
-                            hintText: 'VD: 1220 mm',
-                          ),
+                        //Width
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  'Rộng',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            Checkbox(
+                              value: isVariantWidth,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isVariantWidth = value!;
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                      ),
-                      Divider(),
 
-                      //Length
-                      ListTile(
-                        title: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            labelText: 'Chiều dài',
-                            hintText: 'VD: 2440 mm',
-                          ),
+                        //Thickness
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  'Dày',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            Checkbox(
+                              value: isVariantThickness,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isVariantThickness = value!;
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                      ),
-                      Divider(),
 
-                      //Thickness
-                      ListTile(
-                        title: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            labelText: 'Độ dày',
-                            hintText: 'VD: 18 mm',
-                          ),
+                        //Weight
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  'Nặng',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            Checkbox(
+                              value: isVariantWeight,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isVariantWeight = value!;
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                      ),
-                      Divider(),
 
-                      //Weight
-                      ListTile(
-                        title: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            labelText: 'Trọng lượng',
-                            hintText: 'VD: 30 kg',
-                          ),
+                        //Color
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  'Màu',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            Checkbox(
+                              value: isVariantColor,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isVariantColor = value!;
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  )),
+                      ],
+                    ),
+                  ),
+
+                  //Add Variant
+                  Card(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  'Danh sách biến thể',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.add),
+                              onPressed: _addVariantField,
+                            ),
+                          ],
+                        ),
+
+                        //Add Variant Fields
+                        ...variantFields.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final controller = entry.value;
+                          return VariantField(
+                            index: index,
+                            priceController: controller['priceController']!,
+                            colorController: isVariantColor
+                                ? controller['colorController']!
+                                : null,
+                            lengthController: isVariantLength
+                                ? controller['lengthController']!
+                                : null,
+                            thicknessController: isVariantThickness
+                                ? controller['thicknessController']!
+                                : null,
+                            weightController: isVariantWeight
+                                ? controller['weightController']!
+                                : null,
+                            widthController: isVariantWidth
+                                ? controller['widthController']!
+                                : null,
+                          );
+                        }).toList(),
+                      ],
+                    ),
+                  ),
 
                   //End, but add some Space for the FAB
                   const SizedBox(height: 100),
