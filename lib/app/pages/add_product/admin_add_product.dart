@@ -6,9 +6,9 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:remove_diacritic/remove_diacritic.dart';
 
-import '../../models/product.dart';
+import '../../../domain/entities/product.dart';
 import '../../utils/type.dart';
-import '../providers.dart';
+import '../../providers.dart';
 
 class AdminAddProductPage extends ConsumerStatefulWidget {
   const AdminAddProductPage({super.key});

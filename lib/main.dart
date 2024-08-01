@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/auth_widget.dart';
-import 'app/pages/admin_home.dart';
+import 'app/pages/home/admin_home.dart';
 import 'app/pages/auth/sign_in_page.dart';
 import 'firebase_options.dart';
 

@@ -1,11 +1,11 @@
 // Create an admin screen
-import 'package:building_material_retail/app/pages/admin_add_product.dart';
+import 'package:building_material_retail/app/pages/add_product/admin_add_product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/product.dart';
+import '../../../domain/entities/product.dart';
 import '../../widgets/product-item.dart';
-import '../providers.dart';
+import '../../providers.dart';
 
 class AdminHome extends ConsumerWidget {
   final searchControllerProvider = Provider<TextEditingController>((ref) {

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:remove_diacritic/remove_diacritic.dart';
 
-import '../models/product.dart';
+import '../domain/entities/product.dart';
 
 class FirestoreService {
   FirestoreService({required this.uid});
