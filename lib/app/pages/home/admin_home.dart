@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../domain/entities/product.dart';
 import '../../widgets/product-item.dart';
-import '../../providers.dart';
+import '../../providers/providers.dart';
 
 class AdminHome extends ConsumerWidget {
   final searchControllerProvider = Provider<TextEditingController>((ref) {

@@ -1,10 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 
-import '../services/firestore_service.dart';
-import '../services/storage_service.dart';
+import '../../services/firestore_service.dart';
+import '../../services/storage_service.dart';
 
 final firebaseAuthProvider =
     Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);

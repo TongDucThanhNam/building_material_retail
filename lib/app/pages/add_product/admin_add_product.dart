@@ -8,7 +8,7 @@ import 'package:remove_diacritic/remove_diacritic.dart';
 
 import '../../../domain/entities/product.dart';
 import '../../utils/type.dart';
-import '../../providers.dart';
+import '../../providers/providers.dart';
 
 class AdminAddProductPage extends ConsumerStatefulWidget {
   const AdminAddProductPage({super.key});
