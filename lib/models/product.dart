@@ -37,8 +37,9 @@ class Product {
         // Remove the unit field from the fromMap constructor
         price = map['price'] ?? 0.0,
         imageUrl = map['imageUrl'] ?? "",
-        variants = map['variants'] is List<Variant>
-            ? List<Variant>.from(map['variants'])
+        variants = map['variants'] is List
+            ? List<Variant>.from(
+                map['variants'].map((item) => Variant.fromMap(item)))
             : [],
         brand = map['brand'];
 
@@ -54,7 +55,7 @@ class Product {
       'price': price,
       'imageUrl': imageUrl,
       'brand': brand,
-      'variants': variants,
+      'variants': variants.map((variant) => variant.toMap()).toList(),
     };
   }
 }

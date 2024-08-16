@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/product.dart';
 import '../../widgets/product_item.dart';
 import '../providers.dart';
+import 'admin_product_detail.dart';
 
 class AdminHome extends ConsumerWidget {
   final searchControllerProvider = Provider<TextEditingController>((ref) {
@@ -103,13 +104,13 @@ class AdminHome extends ConsumerWidget {
                         onTap: () {
                           print('Sửa vật tư');
 
-                          //Choose boarding
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return SizedBox();
-                            },
-                          );
+                          // //Choose boarding
+                          // showModalBottomSheet(
+                          //   context: context,
+                          //   builder: (context) {
+                          //     return SizedBox();
+                          //   },
+                          // );
 
                           // Navigator.push(
                           //     context,
@@ -220,29 +221,43 @@ class AdminHome extends ConsumerWidget {
               height: 10,
             ),
             SizedBox(
-              height: 500,
+              height: 350,
               child: StreamBuilder<List<Product>>(
-                  stream: ref.read(databaseProvider)!.searchProduct(
-                      searchTerm: ref.read(searchControllerProvider).text),
-                  builder: (context, snapshot) {
-                    print("State:${snapshot.connectionState}");
-                    print("Data:${snapshot.data}");
-                    if (snapshot.connectionState == ConnectionState.active &&
-                        snapshot.data != null) {
-                      print("Data: ${snapshot.data}");
-
-                      return ListView.builder(
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            final product = snapshot.data![index];
-                            return ProductItem(product: product, ref: ref);
-                          });
-                    }
-                    print("Loading");
-                    return const Center(
-                      child: Text("Loading..."),
+                stream: ref.read(databaseProvider)!.searchProduct(
+                    searchTerm: ref.read(searchControllerProvider).text),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active &&
+                      snapshot.data != null) {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        final product = snapshot.data![index];
+                        return GestureDetector(
+                          onTap: () {
+                            print('Tapped');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ProductDetailPage(product: product),
+                              ),
+                            );
+                          },
+                          child: ProductItem(product: product, ref: ref),
+                        );
+                      },
                     );
-                  }),
+                  }
+                  return const Center(
+                    child: Text("Loading..."),
+                  );
+                },
+              ),
+            ),
+
+            //add more space to scroll bottom
+            const SizedBox(
+              height: 50,
             ),
           ],
         ),

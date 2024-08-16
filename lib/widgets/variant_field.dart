@@ -1,4 +1,6 @@
+import 'package:building_material_retail/widgets/variant_input_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class VariantField extends StatelessWidget {
   TextEditingController? widthController = TextEditingController();
@@ -23,84 +25,45 @@ class VariantField extends StatelessWidget {
       title: Row(
         children: [
           // Width
-          widthController == null
-              ? const SizedBox()
-              : Expanded(
-                  child: TextField(
-                    controller: widthController,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      labelText: 'Rộng',
-                      hintText: 'VD: 1220 mm',
-                    ),
-                  ),
-                ),
+          VariantInputField(
+            controller: widthController,
+            labelText: 'Rộng',
+            hintText: '2(m)',
+          ),
 
           // Length
-          lengthController == null
-              ? const SizedBox()
-              : Expanded(
-                  child: TextField(
-                    controller: lengthController,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      labelText: 'Dài',
-                      hintText: 'VD: 2440 mm',
-                    ),
-                  ),
-                ),
+          VariantInputField(
+            controller: lengthController,
+            labelText: 'Dài',
+            hintText: '6(m)',
+          ),
 
           // Thickness
-          thicknessController == null
-              ? const SizedBox()
-              : Expanded(
-                  child: TextField(
-                    controller: thicknessController,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      labelText: 'Dày',
-                      hintText: 'VD: 18 mm',
-                    ),
-                  ),
-                ),
+          VariantInputField(
+            controller: thicknessController,
+            labelText: 'Dày',
+            hintText: '3(mm)',
+          ),
 
           //Weight
-          weightController == null
-              ? const SizedBox()
-              : Expanded(
-                  child: TextField(
-                    controller: weightController,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      labelText: 'Nặng',
-                      hintText: 'VD: 30 kg',
-                    ),
-                  ),
-                ),
+          VariantInputField(
+            controller: weightController,
+            labelText: 'Nặng',
+            hintText: '0.2(Kg)',
+          ),
 
           //Color
-          colorController == null
-              ? const SizedBox()
-              : Expanded(
-                  child: TextField(
-                    controller: colorController,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      labelText: 'Màu',
-                      hintText: 'VD: Trắng',
-                    ),
-                  ),
-                ),
+          VariantInputField(
+            controller: colorController,
+            labelText: 'Màu',
+            hintText: 'Đỏ',
+          ),
+
           // Price
-          Expanded(
-            child: TextField(
-              controller: priceController,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                labelText: 'Giá',
-                hintText: 'VD: 300,000',
-              ),
-            ),
+          VariantInputField(
+            controller: priceController,
+            labelText: 'Giá',
+            hintText: 'VD:100000',
           ),
 
           //Delete button

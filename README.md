@@ -25,6 +25,14 @@ A step by step series of examples that tell you how to get a development env run
 - Flutter
 - Image Picker
 - photo_manager: ^3.2.0
+- image_cropper: ^1.4.0:
+Go to AndroidManifest.xml and add the following permissions
+```xml
+<activity
+    android:name="com.yalantis.ucrop.UCropActivity"
+    android:screenOrientation="portrait"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+```
 
 
 ## Running the tests
