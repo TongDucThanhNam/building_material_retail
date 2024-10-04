@@ -1,6 +1,7 @@
-import 'package:building_material_retail/models/varitant.dart';
+import 'package:building_material_retail/models/variant.dart';
 
 class Product {
+  final String? id; //
   final String name; // Sắt vuông 40x80
   final String nameWithoutAccent; // sat vuong 40x80
   final String type; // Sắt
@@ -13,6 +14,7 @@ class Product {
   final List<Variant> variants; // List of Variant objects
 
   Product({
+    this.id,
     required this.name,
     required this.nameWithoutAccent,
     required this.type,
@@ -25,8 +27,7 @@ class Product {
   });
 
   Product.fromMap(Map<String, dynamic> map)
-      :
-        // id = map['id'] ?? "",
+      : id = map['id'] ?? "",
         name = map['name'] ?? "",
         nameWithoutAccent = map['nameWithoutAccent'] ?? "",
         type = map['type'] ?? "",
@@ -45,7 +46,7 @@ class Product {
 
   Map<String, dynamic> toMap() {
     return {
-      // 'id': id,
+      'id': id,
       'name': name,
       'nameWithoutAccent': nameWithoutAccent,
       'type': type,

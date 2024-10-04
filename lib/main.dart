@@ -38,7 +38,7 @@ void main() async {
 }
 
 class MyApp extends ConsumerWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -57,12 +57,12 @@ class MyApp extends ConsumerWidget {
         signedInBuilder: (BuildContext context) {
           return Scaffold(
             appBar: AppBar(
-              title: Text("123"),
+              title: const Text("123"),
             ),
             body: Center(
               child: Column(
                 children: [
-                  Text("Signed in33"),
+                  const Text("Signed in33"),
                   ElevatedButton(
                       onPressed: () {
                         ref.read(firebaseAuthProvider).signOut();

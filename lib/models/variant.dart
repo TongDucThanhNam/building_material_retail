@@ -34,4 +34,13 @@ class Variant {
       'price': price,
     };
   }
+
+  @override
+  String toString() {
+    return '${length != null && length != 0 ? 'd: $length, ' : ''}'
+        '${width != null && width != 0 ? 'r: $width, ' : ''}'
+        '${thickness != null && thickness != 0 ? 'D: $thickness, ' : ''}'
+        '${weight != null && weight != 0 ? 'n: $weight, ' : ''}'
+        '${color != null && color!.isNotEmpty ? 'm: $color, ' : ''}';
+  }
 }

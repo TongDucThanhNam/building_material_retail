@@ -52,6 +52,14 @@ class FirestoreService {
         .update({'imageUrl': imageUrl});
   }
 
+  //Update product
+  Future<void> updateProduct(String id, Product product) async {
+    return await firestore
+        .collection("products")
+        .doc(id)
+        .update(product.toMap());
+  }
+
   //Search by keyword
   Stream<List<Product>> searchProduct({String searchTerm = ""}) {
     //search without accent

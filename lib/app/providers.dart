@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 
+import '../models/cart.dart';
+import '../models/cart_item.dart';
 import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
 
@@ -37,3 +38,8 @@ final storageProvider = Provider<StorageService?>((ref) {
 
 //Search input Provider
 final searchInputProvider = StateProvider<String>((_) => "");
+
+final cartProvider =
+    StateNotifierProvider<CartNotifier, Map<String, CartItem>>((ref) {
+  return CartNotifier();
+});

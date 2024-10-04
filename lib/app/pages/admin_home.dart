@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/product.dart';
 import '../../widgets/product_item.dart';
 import '../providers.dart';
+import 'admin_cart.dart';
 import 'admin_product_detail.dart';
 
 class AdminHome extends ConsumerWidget {
@@ -22,6 +23,9 @@ class AdminHome extends ConsumerWidget {
         MediaQuery.of(context).size.height; // get screen height
     double padding = 18.0; // set padding
 
+    // ref.watch(cartProvider.notifier).itemCount.toString(),
+    final cartCount = ref.watch(cartProvider).length;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tra cứu giá VLXD'),
@@ -29,6 +33,58 @@ class AdminHome extends ConsumerWidget {
           IconButton(
               onPressed: () => ref.read(firebaseAuthProvider).signOut(),
               icon: const Icon(Icons.logout))
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        onTap: (index) {},
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Trang chủ',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.analytics),
+            label: 'Thống kê',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Cài đặt',
+          ),
+        ],
+      ),
+      floatingActionButton: Stack(
+        children: <Widget>[
+          FloatingActionButton(
+            onPressed: () {
+              // Thực hiện hành động khi nút được nhấn
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const CartScreen()));
+            },
+            child: const Icon(Icons.shopping_cart),
+          ),
+          Positioned(
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              constraints: const BoxConstraints(
+                minWidth: 18,
+                minHeight: 18,
+              ),
+              child: Text(
+                cartCount.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -42,24 +98,27 @@ class AdminHome extends ConsumerWidget {
               child: Column(
                 children: [
                   //Search bar
-                  SearchBar(
-                      onSubmitted: (value) {
-                        //set search controller
-                        ref.read(searchControllerProvider).text = value;
-                      },
-                      leading: const Icon(Icons.search),
-                      controller: ref.read(searchControllerProvider),
-                      hintText: "Tìm kiếm sản phẩm",
-                      trailing: [
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            ref.read(searchControllerProvider).clear();
-                          },
-                        ),
-                      ]),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: SearchBar(
+                        onSubmitted: (value) {
+                          //set search controller
+                          ref.read(searchControllerProvider).text = value;
+                        },
+                        leading: const Icon(Icons.search),
+                        controller: ref.read(searchControllerProvider),
+                        hintText: "Tìm kiếm sản phẩm",
+                        trailing: [
+                          IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () {
+                              ref.read(searchControllerProvider).clear();
+                            },
+                          ),
+                        ]),
+                  ),
 
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
                   // 1st row
                   Row(
@@ -102,92 +161,12 @@ class AdminHome extends ConsumerWidget {
                       //Edit Lodging
                       GestureDetector(
                         onTap: () {
-                          print('Sửa vật tư');
-
-                          // //Choose boarding
-                          // showModalBottomSheet(
-                          //   context: context,
-                          //   builder: (context) {
-                          //     return SizedBox();
-                          //   },
-                          // );
-
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       builder: (context) => EditBoardingPage(),
-                          //     ));
-                        },
-                        child: Card(
-                          color: Colors.green,
-                          elevation: 5, // shadow
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          child: SizedBox(
-                            width: screenWidth * 0.5 - padding * 2,
-                            height: screenHeight * 0.1,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.edit),
-                                Text('Cập nhật giá',
-                                    style:
-                                        Theme.of(context).textTheme.labelLarge),
-                              ],
+                          ref.watch(cartProvider.notifier).clear();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Đã xóa tất cả sản phẩm'),
                             ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  // 2nd row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // Add Lodging
-                      GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       builder: (context) => DeleteBoardingPage(),
-                          //     ));
-                        },
-                        child: Card(
-                          color: Colors.red,
-                          elevation: 5, // shadow
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          child: SizedBox(
-                            width: screenWidth * 0.5 - padding * 2,
-                            height: screenHeight * 0.1,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.edit),
-                                Text('Thay đổi thông tin',
-                                    style:
-                                        Theme.of(context).textTheme.labelLarge),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      //Sign Contract
-                      GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       builder: (context) => SignContract(
-                          //         boarding: boardings,
-                          //         // landlordId: user['userId'] ?? '',
-                          //       ),
-                          //     ));
+                          );
                         },
                         child: Card(
                           color: Colors.orange,
@@ -202,7 +181,7 @@ class AdminHome extends ConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Icon(Icons.info),
-                                Text('Tinh đơn hàng',
+                                Text('Tạo đơn báo giá mới',
                                     style:
                                         Theme.of(context).textTheme.labelLarge),
                               ],
@@ -234,7 +213,7 @@ class AdminHome extends ConsumerWidget {
                         final product = snapshot.data![index];
                         return GestureDetector(
                           onTap: () {
-                            print('Tapped');
+                            debugPrint('Tapped');
                             Navigator.push(
                               context,
                               MaterialPageRoute(

@@ -1,7 +1,10 @@
+import 'package:building_material_retail/app/pages/admin_edit_product.dart';
+import 'package:building_material_retail/app/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/product.dart';
+import '../utils/helper.dart';
 
 class ProductItem extends StatefulWidget {
   final Product product;
@@ -18,71 +21,122 @@ class _ProductItemState extends State<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
-    //function
-    String vietnameseCurrencyFormat(String price) {
-      return "${price.replaceAllMapped(RegExp(r"(\d{1,3})(?=(\d{3})+(?!\d))"), (Match m) => "${m[1]}." // Add a dot
-          )} VND";
-    }
+    return Stack(
+      children: [
+        Card(
+          borderOnForeground: true,
+          shadowColor: Colors.orange,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          // shape
+          elevation: 5,
+          // shadow
+          margin: const EdgeInsets.all(10),
+          // margin
+          child: Row(
+            children: [
+              //Image
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15.0),
+                child: widget.product.imageUrl != ""
+                    ? Image.network(widget.product.imageUrl,
+                        height: 130, width: 120, fit: BoxFit.cover)
+                    : const SizedBox(
+                        height: 130, width: 120, child: Icon(Icons.image)),
+              ),
 
-    return Card(
-        borderOnForeground: true,
-        shadowColor: Colors.orange,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        // shape
-        elevation: 5,
-        // shadow
-        margin: const EdgeInsets.all(10),
-        // margin
-        child: Row(
-          children: [
-            //Image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(15.0),
-              child: widget.product.imageUrl != ""
-                  ? Image.network(widget.product.imageUrl,
-                      height: 130, width: 120, fit: BoxFit.cover)
-                  : Container(
-                      height: 130, width: 120, child: const Icon(Icons.image)),
-            ),
+              const SizedBox(width: 10
+                  //Space between image and text
 
-            const SizedBox(width: 10
-                //Space between image and text
+                  ),
+              Column(
+                children: [
+                  //Product name
+                  Text(widget.product.name,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold)),
 
-                ),
-            Column(
-              children: [
-                //Product name
-                Text(widget.product.name,
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold)),
+                  //Price
+                  Text("Giá: ${(priceRange)}",
+                      style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
 
-                //Price
-                Text("Giá: ${vietnameseCurrencyFormat(priceRange)}",
-                    style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
+                  //Unit
+                  Text("Đơn vị tính: ${widget.product.type}"),
 
-                //Unit
-                Text("Đơn vị tính: ${widget.product.type}"),
+                  //Brand
+                  Text("Thương hiệu: ${widget.product.brand}"),
 
-                //Brand
-                Text("Thương hiệu: ${widget.product.brand}"),
+                  //Day update price
+                  const Text("Cập nhật giá: 12/12/2024",
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ],
+          ),
+        ),
+        //More icon
 
-                //Day update price
-                const Text("Cập nhật giá: 12/12/2021",
-                    style:
-                        TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ],
-        ));
-  }
+        Align(
+          alignment: Alignment.topRight,
+          child: IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      //add to cart
+                      ListTile(
+                        leading: const Icon(Icons.add_shopping_cart),
+                        title: const Text("Thêm vào đơn hàng"),
+                        onTap: () {
+                          //Add to cart
+                          widget.ref.read(cartProvider.notifier).addItem(
+                              widget.product.id ?? widget.product.name,
+                              widget.product,
+                              widget.product.variants[0]);
 
-  //function
-  String vietnameseCurrencyFormat(String price) {
-    return "${price.replaceAllMapped(RegExp(r"(\d{1,3})(?=(\d{3})+(?!\d))"), (Match m) => "${m[1]}." // Add a dot
-        )}";
+                          //close
+                          Navigator.pop(context);
+                        },
+                      ),
+
+                      ListTile(
+                        leading: const Icon(Icons.edit),
+                        title: const Text('Sửa sản phẩm'),
+                        onTap: () {
+                          // Handle edit action
+                          //Route to EditPage
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AdminEditProduct(
+                                      product: widget.product)));
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.delete),
+                        title: const Text('Xoá sản phẩm'),
+                        onTap: () {
+                          // Handle delete action
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 
   @override
