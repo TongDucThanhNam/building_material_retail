@@ -1,24 +1,23 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/repositories/products_repository.dart';
 
 import 'dart:async';
 
 class DataProductsRepository extends ProductsRepository {
-  final FirebaseFirestore firestore;
+  final SupabaseClient supabase;
 
-  DataProductsRepository(this.firestore);
+  DataProductsRepository(this.supabase);
 
   @override
   Future<Product> getAllProduct(String id) async {
-    final snapshot = await firestore.collection('products').doc(id).get();
-    return Product.fromMap(snapshot.data()!);
+    final data = await supabase.from('products').select().eq('id', id).single();
+    return Product.fromMap(data);
   }
 
   @override
   Future<List<Product>> getProducts() async {
-    final snapshot = await firestore.collection('products').get();
-    return snapshot.docs.map((doc) => Product.fromMap(doc.data())).toList();
+    final List data = await supabase.from('products').select();
+    return data.map((doc) => Product.fromMap(doc as Map<String, dynamic>)).toList();
   }
 }
