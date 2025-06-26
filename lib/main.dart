@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app/pages/widgets/auth_widget.dart';
 import 'app/pages/home/admin_home.dart';
 import 'app/pages/auth/sign_in_page.dart';
   
 void main() async {
-  const supabaseUrl = 'https://cemjfessszigeoeuwzvf.supabase.co';
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlbWpmZXNzc3ppZ2VvZXV3enZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3NjI2NjcsImV4cCI6MjA2NjMzODY2N30.uL6imFD_LDObtlWK49s06kHpquspoGLy-Nfa0FL1MVA";
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
+
+  final supabaseUrl = dotenv.env['PROJECT_URL'] ?? "";
+  final supabaseKey = dotenv.env['ANON_KEY'] ?? "";
 
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
   runApp(const ProviderScope(child: MyApp()));

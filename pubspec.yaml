@@ -41,6 +41,7 @@ dependencies:
   remove_diacritic: ^0.9.0 # package to remove diacritics from strings
   photo_manager: ^3.7.1 # package for managing photos and videos on the device
   image_cropper: ^7.0.5 # package for cropping images
+  flutter_dotenv: ^5.2.1
 
 
 dev_dependencies:

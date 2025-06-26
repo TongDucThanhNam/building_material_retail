@@ -22,16 +22,16 @@
     A Flutter project that helps you to manage your building material retail store.
   </p>    
     <br />
-    <a href="https://github.com/TongDucThanhNam/building_material_retail">
+    <a href="https://github.com/tongducthanhnam/building_material_retail">
       <strong>Explore the docs »</strong>
     </a>
     <br />
     <br />
-    <a href="https://github.com/TongDucThanhNam/building_material_retail">View Demo</a>
+    <a href="https://github.com/tongducthanhnam/building_material_retail">View Demo</a>
     ·
-    <a href="https://github.com/TongDucThanhNam/building_material_retail/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/tongducthanhnam/building_material_retail/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/TongDucThanhNam/building_material_retail/issues/new?labels=enhancement&template=feature-request---.md">
+    <a href="https://github.com/tongducthanhnam/building_material_retail/issues/new?labels=enhancement&template=feature-request---.md">
       Request Feature</a>
     </div>
 </div>
@@ -119,7 +119,7 @@ Before you begin, ensure you have met the following requirements:
 - Clone the repository:
 
 ```
-git clone https://github.com/TongDucThanhNam/building_material_retail
+git clone https://github.com/tongducthanhnam/building_material_retail
 ```
 
 - Flutter pub get
@@ -150,7 +150,7 @@ flutter run
 [//]: # (Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.)
 
 _For more examples, please refer to
-the [Documentation](https://github.com/TongDucThanhNam/building_material_retail?tab=readme-ov-file)_
+the [Documentation](https://github.com/tongducthanhnam/building_material_retail?tab=readme-ov-file)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -168,7 +168,7 @@ the [Documentation](https://github.com/TongDucThanhNam/building_material_retail?
 - [ ] Analytics & Statistics feature
 - [ ] Report feature
 
-See the [open issues](https://github.com/TongDucThanhNam/building_material_retail/issues) for a full
+See the [open issues](https://github.com/tongducthanhnam/building_material_retail/issues) for a full
 list of
 proposed features (and known issues).
 
@@ -195,7 +195,7 @@ Don't forget to give the project a star! Thanks again!
 
 ### Top contributors:
 
-<a href="https://github.com/TongDucThanhNam/building_material_retail/graphs/contributors">
+<a href="https://github.com/tongducthanhnam/building_material_retail/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=tongducthanhnam/building_material_retail" alt="contrib.rocks image" />
 </a>
 

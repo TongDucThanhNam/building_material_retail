@@ -54,3 +54,4 @@ pubspec.lock
 analysis_options.yaml
 .metadata
 
+.env
