@@ -1,30 +1,94 @@
 // Create an admin screen
 import 'package:building_material_retail/app/pages/cart/admin_cart.dart';
 import 'package:building_material_retail/app/pages/product_manage/product_management.dart';
+import 'package:building_material_retail/app/pages/dashboard/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../domain/entities/product.dart';
-import '../widgets/product-item.dart';
+import '../../widgets/product-item.dart';
 import '../../providers/providers.dart';
 
-class AdminHome extends ConsumerWidget {
+class AdminHome extends ConsumerStatefulWidget {
+  AdminHome({super.key});
+
+  @override
+  ConsumerState<AdminHome> createState() => _AdminHomeState();
+}
+
+class _AdminHomeState extends ConsumerState<AdminHome> {
   final searchControllerProvider = Provider<TextEditingController>((ref) {
     return TextEditingController();
   });
 
-  AdminHome({super.key});
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
-  Widget build(BuildContext context, ref) {
-    double screenWidth = MediaQuery.of(context).size.width; // get screen width
-    double screenHeight =
-        MediaQuery.of(context).size.height; // get screen height
-    double padding = 18.0; // set padding
-
-    // ref.watch(cartProvider.notifier).itemCount.toString(),
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double padding = 18.0;
     final cartCount = ref.watch(cartProvider).length;
+
+    final List<Widget> _pages = [
+      // Home page (product management + product list)
+      SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ProductManagement(
+              screenWidth: screenWidth,
+              screenHeight: screenHeight,
+              padding: padding,
+              searchControllerProvider: searchControllerProvider,
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 500,
+              child: ref.read(databaseProvider) == null
+                  ? const Center(
+                      child: Text("Bạn chưa đăng nhập hoặc session chưa sẵn sàng."),
+                    )
+                  : StreamBuilder<List<Product>>(
+                      stream: ref.read(databaseProvider)!.getProducts(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(child: Text("Lỗi: ${snapshot.error}"));
+                        }
+                        if ((snapshot.connectionState == ConnectionState.active ||
+                                snapshot.connectionState == ConnectionState.done) &&
+                            snapshot.data != null) {
+                          if (snapshot.data!.isEmpty) {
+                            return const Center(child: Text("Không có sản phẩm nào."));
+                          }
+                          return ListView.builder(
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (context, index) {
+                                final product = snapshot.data![index];
+                                return ProductItem(product: product, ref: ref);
+                              });
+                        }
+                        return const Center(
+                          child: Text("Loading..."),
+                        );
+                      }),
+            ),
+          ],
+        ),
+      ),
+      // Dashboard page
+      const DashboardPage(),
+      // Settings page (placeholder)
+      const Center(child: Text('Cài đặt', style: TextStyle(fontSize: 24))),
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -38,8 +102,8 @@ class AdminHome extends ConsumerWidget {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        onTap: (index) {},
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -59,7 +123,6 @@ class AdminHome extends ConsumerWidget {
         children: <Widget>[
           FloatingActionButton(
             onPressed: () {
-              // Thực hiện hành động khi nút được nhấn
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const CartScreen()));
             },
@@ -89,63 +152,7 @@ class AdminHome extends ConsumerWidget {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            // Product management section
-            ProductManagement(
-              screenWidth: screenWidth,
-              screenHeight: screenHeight,
-              padding: padding,
-              searchControllerProvider: searchControllerProvider,
-            ),
-
-            //List of products
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: 500,
-              child: ref.read(databaseProvider) == null
-                  ? const Center(
-                      child: Text("Bạn chưa đăng nhập hoặc session chưa sẵn sàng."),
-                    )
-                  : StreamBuilder<List<Product>>(
-                      stream: ref.read(databaseProvider)!.getProducts(), // Use getProducts for debugging
-                      builder: (context, snapshot) {
-                        print("State: ${snapshot.connectionState}");
-                        print("Data: ${snapshot.data}");
-                        if (snapshot.hasError) {
-                          print("Error: ${snapshot.error}");
-                          return Center(child: Text("Lỗi: ${snapshot.error}"));
-                        }
-                        if ((snapshot.connectionState == ConnectionState.active ||
-                             snapshot.connectionState == ConnectionState.done) &&
-                            snapshot.data != null) {
-                          print("Data: ${snapshot.data}");
-
-                          if (snapshot.data!.isEmpty) {
-                            return const Center(child: Text("Không có sản phẩm nào."));
-                          }
-
-                          return ListView.builder(
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) {
-                                final product = snapshot.data![index];
-                                return ProductItem(product: product, ref: ref);
-                              });
-                        }
-                        print("Loading");
-                        return const Center(
-                          child: Text("Loading..."),
-                        );
-                      }),
-            ),
-          ],
-        ),
-      ),
+      body: _pages[_selectedIndex],
     );
   }
 }

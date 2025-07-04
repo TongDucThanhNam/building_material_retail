@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../domain/entities/product.dart';
-import '../product_manage/product_detail_page.dart';
+import '../../domain/entities/product.dart';
+import '../pages/product_manage/product_detail_page.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;

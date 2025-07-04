@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/product_variant_provider.dart';
 import '../../../domain/entities/product.dart';
-import '../../../domain/entities/product_variant.dart';
 
 class ProductDetailPage extends ConsumerStatefulWidget {
   final Product product;
@@ -153,8 +152,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                                         Expanded(child: Text('Kích thước: ${variant.size}')),
                                       if (variant.color != null && variant.color!.isNotEmpty)
                                         Expanded(child: Text('Màu: ${variant.color}')),
-                                      if (variant.basePrice != null)
-                                        Expanded(child: Text('Giá: ${vietnameseCurrencyFormat(variant.basePrice.toInt().toString())}')),
+                                      Expanded(child: Text('Giá: ${vietnameseCurrencyFormat(variant.basePrice.toInt().toString())}')),
                                       if (variant.technicalSpecs != null && variant.technicalSpecs!.isNotEmpty)
                                         Expanded(child: Text('Thông số: ${variant.technicalSpecs}')),
                                     ],

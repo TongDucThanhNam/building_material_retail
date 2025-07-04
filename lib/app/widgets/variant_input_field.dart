@@ -9,11 +9,11 @@ class VariantInputField extends StatelessWidget {
   final String hintText;
 
   const VariantInputField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.labelText,
     required this.hintText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

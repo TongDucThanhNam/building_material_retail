@@ -13,7 +13,7 @@ class CartScreen extends ConsumerWidget {
     final cart = ref.watch(cartProvider);
     final totalAmount = cart.values.fold<double>(
       0.0,
-      (sum, item) => sum + (item.variantChosen.basePrice! * item.quantity),
+      (sum, item) => sum + (item.variantChosen.basePrice * item.quantity),
     );
     return Scaffold(
       appBar: AppBar(title: const Text('Đơn hàng')),
@@ -89,10 +89,10 @@ class CartItemWidget extends ConsumerWidget {
         children: [
           Text(cartItem.variantChosen.toString()),
           Text(
-            'Tổng cộng: ${vietnameseCurrencyFormat((cartItem.variantChosen.basePrice! * cartItem.quantity).toInt().toString())}',
+            'Tổng cộng: ${vietnameseCurrencyFormat((cartItem.variantChosen.basePrice * cartItem.quantity).toInt().toString())}',
           ),
           Text(
-              'Đơn giá: ${vietnameseCurrencyFormat(cartItem.variantChosen.basePrice!.toInt().toString())}'),
+              'Đơn giá: ${vietnameseCurrencyFormat(cartItem.variantChosen.basePrice.toInt().toString())}'),
         ],
       ),
       trailing: Row(

@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 class ImageHolder extends ConsumerWidget {
   final StateProvider<CroppedFile?> imageProvider;
 
-  const ImageHolder({Key? key, required this.imageProvider}) : super(key: key);
+  const ImageHolder({super.key, required this.imageProvider});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

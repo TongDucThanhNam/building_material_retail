@@ -112,30 +112,38 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
       }
     }
 
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final borderColor = isDark ? Colors.grey[700]! : Colors.grey[300]!;
+    final cardBg = isDark ? Colors.grey[900]! : Colors.white;
+    final sectionHeaderStyle = theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue[700]);
+    final labelStyle = theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: Colors.grey[800]);
+
     return Scaffold(
-      backgroundColor: Colors.white, // White background for cleanliness
+      backgroundColor: isDark ? Colors.grey[100] : const Color(0xFFF6F8FA),
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FloatingActionButton.extended(
           onPressed: addProduct,
-          backgroundColor: Colors.blue[600], // Blue-600 for primary action
+          backgroundColor: Colors.blue[600],
           label: const Text('Thêm sản phẩm', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
           icon: const Icon(Icons.add, color: Colors.white),
-          elevation: 8, // Prominent shadow
+          elevation: 8,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: AppBar(
-        title: const Text('Thêm sản phẩm', style: TextStyle(color: Color(0xFF1A202C))), // gray-800
+        title: const Text('Thêm sản phẩm', style: TextStyle(color: Color(0xFF1A202C))),
         backgroundColor: Colors.white,
         elevation: 4,
         iconTheme: const IconThemeData(color: Color(0xFF1A202C)),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          double horizontalPadding = constraints.maxWidth < 640 ? 8 : 24;
+          double horizontalPadding = constraints.maxWidth < 640 ? 8 : 32;
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 15.0),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 20.0),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -143,31 +151,32 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                 children: [
                   // Image Holder with elevation
                   Material(
-                    elevation: 6,
-                    borderRadius: BorderRadius.circular(16),
-                    shadowColor: Colors.black.withOpacity(0.18),
+                    elevation: 8,
+                    borderRadius: BorderRadius.circular(20),
+                    shadowColor: Colors.black.withOpacity(0.15),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
                         Consumer(
                           builder: (context, watch, child) {
                             final image = ref.watch(addImageProvider);
-                            return Container(
-                              height: 150,
-                              width: 150,
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              height: 170,
+                              width: 170,
                               decoration: BoxDecoration(
-                                color: Colors.grey[100], // gray-100
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: Colors.grey[300]!, width: 2),
+                                color: Colors.grey[100],
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: borderColor, width: 2),
                               ),
                               child: image == null
-                                  ? Icon(Icons.image, size: 80, color: Colors.grey[400])
+                                  ? Icon(Icons.image, size: 90, color: Colors.grey[300])
                                   : ClipRRect(
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(20),
                                       child: Image.file(
                                         File(image.path),
-                                        height: 150,
-                                        width: 150,
+                                        height: 170,
+                                        width: 170,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -176,14 +185,14 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                         ),
                         // Camera button overlay
                         Positioned(
-                          bottom: 8,
-                          right: 8,
+                          bottom: 10,
+                          right: 10,
                           child: Material(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withOpacity(0.95),
                             shape: const CircleBorder(),
-                            elevation: 4,
+                            elevation: 6,
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(25),
+                              borderRadius: BorderRadius.circular(28),
                               onTap: () async {
                                 var pickedFile = await ImagePicker().pickImage(
                                   source: ImageSource.gallery,
@@ -193,7 +202,7 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                                     sourcePath: pickedFile.path,
                                     aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
                                     compressFormat: ImageCompressFormat.jpg,
-                                    compressQuality: 50,
+                                    compressQuality: 60,
                                   );
                                   if (croppedFile != null) {
                                     ref.watch(addImageProvider.notifier).state = croppedFile;
@@ -201,10 +210,10 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                                 }
                               },
                               child: Container(
-                                height: 56, // 44px minimum touch target
+                                height: 56,
                                 width: 56,
                                 alignment: Alignment.center,
-                                child: const Icon(Icons.camera_alt, size: 30, color: Color(0xFF2563EB)), // blue-600
+                                child: const Icon(Icons.camera_alt, size: 32, color: Color(0xFF2563EB)),
                               ),
                             ),
                           ),
@@ -212,83 +221,52 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 36),
                   // Product Info Card
                   Material(
-                    elevation: 4,
-                    borderRadius: BorderRadius.circular(16),
-                    shadowColor: Colors.black.withOpacity(0.12),
+                    elevation: 3,
+                    borderRadius: BorderRadius.circular(18),
+                    shadowColor: Colors.black.withOpacity(0.10),
                     child: Card(
-                      color: Colors.white,
+                      color: cardBg,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        side: BorderSide(color: Colors.grey[300]!, width: 1.5),
+                        borderRadius: BorderRadius.circular(18),
+                        side: BorderSide(color: borderColor, width: 1.2),
                       ),
                       elevation: 0,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 18.0),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ListTile(
-                              title: TextField(
-                                controller: titleTextEditingController,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    alignLabelWithHint: false,
-                                    // labelText: 'Tên sản phẩm',
-                                    hintText: 'VD: Ván ép phủ phim 18 ly',
-                                    suffixIcon: IconButton(
-                                      icon: const Icon(Icons.clear),
-                                      onPressed: () {
-                                        titleTextEditingController.clear();
-                                      },
-                                    ),
-                                    label: RichText(
-                                      text: const TextSpan(
-                                        text: 'Tên sản phẩm ',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-
-                                          color: Colors.black, // Màu chữ của label
-                                          fontSize:
-                                              16.0, // Kích thước chữ của label
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: '*',
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                              fontSize: 18.0,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )),
-                              ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Text('Thông tin sản phẩm', style: sectionHeaderStyle),
                             ),
                             const Divider(),
                             ListTile(
+                              contentPadding: EdgeInsets.zero,
                               title: TextField(
-                                controller: descriptionEditingController,
+                                controller: titleTextEditingController,
+                                style: theme.textTheme.bodyLarge,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: 'VD: Ván ép phủ phim 18 ly chống ẩm',
+                                  alignLabelWithHint: false,
+                                  hintText: 'VD: Ván ép phủ phim 18 ly',
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      titleTextEditingController.clear();
+                                    },
+                                  ),
                                   label: RichText(
-                                    text: const TextSpan(
-                                      text: 'Mô tả sản phẩm ',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-
-                                        color: Colors.black, // Màu chữ của label
-                                        fontSize: 16.0, // Kích thước chữ của label
-                                      ),
-                                      children: [
+                                    text: TextSpan(
+                                      text: 'Tên sản phẩm ',
+                                      style: labelStyle,
+                                      children: const [
                                         TextSpan(
                                           text: '*',
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 18.0,
-                                          ),
+                                          style: TextStyle(color: Colors.red, fontSize: 18.0),
                                         ),
                                       ],
                                     ),
@@ -298,26 +276,45 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                             ),
                             const Divider(),
                             ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: TextField(
+                                controller: descriptionEditingController,
+                                style: theme.textTheme.bodyLarge,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'VD: Ván ép phủ phim 18 ly chống ẩm',
+                                  label: RichText(
+                                    text: TextSpan(
+                                      text: 'Mô tả sản phẩm ',
+                                      style: labelStyle,
+                                      children: const [
+                                        TextSpan(
+                                          text: '*',
+                                          style: TextStyle(color: Colors.red, fontSize: 18.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const Divider(),
+                            ListTile(
+                              contentPadding: EdgeInsets.zero,
                               title: TextField(
                                 controller: priceEditingController,
+                                style: theme.textTheme.bodyLarge,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: 'Nhập giá sản phẩm',
                                   label: RichText(
-                                    text: const TextSpan(
+                                    text: TextSpan(
                                       text: 'Giá sản phẩm ',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black, // Màu chữ của label
-                                        fontSize: 16.0, // Kích thước chữ của label
-                                      ),
-                                      children: [
+                                      style: labelStyle,
+                                      children: const [
                                         TextSpan(
                                           text: '*',
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 18.0,
-                                          ),
+                                          style: TextStyle(color: Colors.red, fontSize: 18.0),
                                         ),
                                       ],
                                     ),
@@ -326,95 +323,66 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                                 keyboardType: TextInputType.number,
                               ),
                             ),
-
                             const Divider(),
                             //Unit
                             ListTile(
+                              contentPadding: EdgeInsets.zero,
                               title: Row(
                                 children: [
-                                  // Label ở bên trái
-                                  const Expanded(
+                                  Expanded(
                                     flex: 3,
-                                    child: Text('Đơn vị tính:',
-                                        style:
-                                            TextStyle(fontWeight: FontWeight.bold)),
+                                    child: Text('Đơn vị tính:', style: labelStyle),
                                   ),
                                   const SizedBox(width: 8),
-                                  // Khoảng cách giữa Label và DropdownButton
-                                  // DropdownButtonFormField ở bên phải
                                   Expanded(
                                     flex: 2,
                                     child: DropdownButtonFormField(
                                       value: 'Cái',
                                       decoration: const InputDecoration(
-                                        border: InputBorder
-                                            .none, // Ẩn đường divider mặc định
-                                        contentPadding: EdgeInsets
-                                            .zero, // Loại bỏ padding mặc định
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.zero,
                                       ),
                                       items: const [
-                                        DropdownMenuItem(
-                                          value: 'Cái',
-                                          child: Text('Cái'),
-                                        ),
-                                        DropdownMenuItem(
-                                          value: 'Mét',
-                                          child: Text('Mét'),
-                                        ),
-                                        DropdownMenuItem(
-                                          value: 'Bao',
-                                          child: Text('Mét vuông'),
-                                        ),
+                                        DropdownMenuItem(value: 'Cái', child: Text('Cái')),
+                                        DropdownMenuItem(value: 'Mét', child: Text('Mét')),
+                                        DropdownMenuItem(value: 'Bao', child: Text('Mét vuông')),
                                       ],
-                                      onChanged: (dynamic value) {
-                                        // setState(() {
-                                        //   unit = value;
-                                        // });
-                                      },
+                                      onChanged: (dynamic value) {},
                                     ),
                                   )
                                 ],
                               ),
                             ),
-
                             const Divider(),
                             ListTile(
+                              contentPadding: EdgeInsets.zero,
                               title: TextField(
                                 controller: brandTextEditingController,
-                                decoration: const InputDecoration(
+                                style: theme.textTheme.bodyLarge,
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
                                   labelText: 'Thương hiệu',
-                                  labelStyle: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black, // Màu chữ của label
-                                    fontSize: 16.0, // Kích thước chữ của label
-                                  ),
+                                  labelStyle: labelStyle,
                                   hintText: 'VD: Hoa Sen',
                                 ),
                               ),
                             ),
                             const Divider(),
                             ListTile(
+                              contentPadding: EdgeInsets.zero,
                               title: Row(
                                 children: [
-                                  // Label ở bên trái
-                                  const Expanded(
+                                  Expanded(
                                     flex: 3,
-                                    child: Text('Loại vật liệu:',
-                                        style:
-                                            TextStyle(fontWeight: FontWeight.bold)),
+                                    child: Text('Loại vật liệu:', style: labelStyle),
                                   ),
                                   const SizedBox(width: 8),
-                                  // Khoảng cách giữa Label và DropdownButton
-                                  // DropdownButtonFormField ở bên phải
                                   Expanded(
                                     child: DropdownButtonFormField(
                                       value: dropdownValue,
                                       decoration: const InputDecoration(
-                                        border: InputBorder
-                                            .none, // Ẩn đường divider mặc định
-                                        contentPadding: EdgeInsets
-                                            .zero, // Loại bỏ padding mặc định
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.zero,
                                       ),
                                       onChanged: (String? newValue) {
                                         setState(() {
@@ -434,22 +402,28 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                             ),
                             const Divider(),
                             ListTile(
+                              contentPadding: EdgeInsets.zero,
                               title: TextField(
                                 controller: colorController,
-                                decoration: const InputDecoration(
+                                style: theme.textTheme.bodyLarge,
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
                                   labelText: 'Màu sắc',
+                                  labelStyle: labelStyle,
                                   hintText: 'VD: Nâu, Trắng',
                                 ),
                               ),
                             ),
                             const Divider(),
                             ListTile(
+                              contentPadding: EdgeInsets.zero,
                               title: TextField(
                                 controller: sizeController,
-                                decoration: const InputDecoration(
+                                style: theme.textTheme.bodyLarge,
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
                                   labelText: 'Kích thước',
+                                  labelStyle: labelStyle,
                                   hintText: 'VD: 1220x2440',
                                 ),
                               ),
@@ -459,70 +433,80 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 36),
                   // Specifications Card
                   Material(
-                    elevation: 4,
-                    borderRadius: BorderRadius.circular(16),
-                    shadowColor: Colors.black.withOpacity(0.12),
+                    elevation: 3,
+                    borderRadius: BorderRadius.circular(18),
+                    shadowColor: Colors.black.withOpacity(0.10),
                     child: Card(
-                      color: Colors.white,
+                      color: cardBg,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        side: BorderSide(color: Colors.grey[300]!, width: 1.5),
+                        borderRadius: BorderRadius.circular(18),
+                        side: BorderSide(color: borderColor, width: 1.2),
                       ),
                       elevation: 0,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 18.0),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const ListTile(
-                              title: Text(
-                                'Thông số kỹ thuật',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Text('Thông số kỹ thuật', style: sectionHeaderStyle),
                             ),
                             const Divider(),
                             ListTile(
+                              contentPadding: EdgeInsets.zero,
                               title: TextField(
                                 controller: widthController,
-                                decoration: const InputDecoration(
+                                style: theme.textTheme.bodyLarge,
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
                                   labelText: 'Chiều rộng',
+                                  labelStyle: labelStyle,
                                   hintText: 'VD: 1220 mm',
                                 ),
                               ),
                             ),
                             const Divider(),
                             ListTile(
+                              contentPadding: EdgeInsets.zero,
                               title: TextField(
                                 controller: lengthController,
-                                decoration: const InputDecoration(
+                                style: theme.textTheme.bodyLarge,
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
                                   labelText: 'Chiều dài',
+                                  labelStyle: labelStyle,
                                   hintText: 'VD: 2440 mm',
                                 ),
                               ),
                             ),
                             const Divider(),
                             ListTile(
+                              contentPadding: EdgeInsets.zero,
                               title: TextField(
                                 controller: thicknessController,
-                                decoration: const InputDecoration(
+                                style: theme.textTheme.bodyLarge,
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
                                   labelText: 'Độ dày',
+                                  labelStyle: labelStyle,
                                   hintText: 'VD: 18 mm',
                                 ),
                               ),
                             ),
                             const Divider(),
                             ListTile(
+                              contentPadding: EdgeInsets.zero,
                               title: TextField(
                                 controller: weightController,
-                                decoration: const InputDecoration(
+                                style: theme.textTheme.bodyLarge,
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
                                   labelText: 'Trọng lượng',
+                                  labelStyle: labelStyle,
                                   hintText: 'VD: 30 kg',
                                 ),
                               ),
@@ -532,8 +516,7 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 120),
                 ],
               ),
             ),

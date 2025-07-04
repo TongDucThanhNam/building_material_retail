@@ -19,7 +19,7 @@ final productVariantsListProvider = FutureProvider<List<ProductVariant>>((ref) a
 });
 
 class UpdateProductPage extends ConsumerStatefulWidget {
-  const UpdateProductPage({Key? key}) : super(key: key);
+  const UpdateProductPage({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _UpdateProductPageState();

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:building_material_retail/app/pages/product_manage/admin_add_product.dart';
-import 'package:building_material_retail/app/pages/product_manage/admin_update_product.dart';
 import 'package:building_material_retail/app/pages/product_manage/calculate_order_price.dart';
-import '../../providers/providers.dart';
 import 'edit_product.dart';
 
 class ProductManagement extends ConsumerWidget {
@@ -30,7 +28,7 @@ class ProductManagement extends ConsumerWidget {
               onSubmitted: (value) {
                 ref.read(searchControllerProvider).text = value;
               },
-              leading: const Icon(Icons.search),
+                // leading: const Icon(Icons.search),
               controller: ref.read(searchControllerProvider),
               hintText: "Tìm kiếm sản phẩm",
               trailing: [
@@ -41,6 +39,7 @@ class ProductManagement extends ConsumerWidget {
                   },
                 ),
               ]),
+              
           const SizedBox(height: 10),
           // 1st row
           Row(

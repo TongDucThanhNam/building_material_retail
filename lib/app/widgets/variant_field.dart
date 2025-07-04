@@ -1,6 +1,5 @@
-import 'package:building_material_retail/app/pages/widgets/variant_input_field.dart';
+import 'package:building_material_retail/app/widgets/variant_input_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class VariantField extends StatelessWidget {
   TextEditingController? widthController = TextEditingController();
@@ -11,7 +10,7 @@ class VariantField extends StatelessWidget {
   TextEditingController? priceController = TextEditingController();
 
   VariantField(
-      {this.widthController,
+      {super.key, this.widthController,
       this.lengthController,
       this.thicknessController,
       this.weightController,
